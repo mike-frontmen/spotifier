@@ -2,6 +2,8 @@ var process = require('child_process');
 var app = require('express')();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
+var ent = require('ent');
+var decode = require('ent/decode');
 
 var recorder = null;
 
@@ -10,7 +12,7 @@ function showMessage (msg) {
 }
 
 function createFileName (track) {
-  return 'tracks/' + track.name + ' - ' + track.artist + '.mp3';
+  return decode('tracks/' + track.name + ' - ' + track.artist + '.mp3');
 }
 
 function getProcessCmd (fileName) {
