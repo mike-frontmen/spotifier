@@ -37,6 +37,7 @@ io.on('connection', function (socket) {
   showMessage('user connected.');
 
   socket.on('player-new-track', function (track) {
+    stopRecord();
     startRecord(track);
   });
 });
