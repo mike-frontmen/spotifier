@@ -1,5 +1,19 @@
 (function () {
 
+  function handleMessage (data) {
+    console.log(data);
+    
+    if (data.type == 'player-play-pause') {
+      pressPlayBtn();
+    } else if (data.type === 'player-next') {
+      pressNextBtn();
+    } else if (data.type === 'player-prev') {
+      pressPrevBtn();
+    }
+  }
+
+  chrome.extension.onMessage.addListener(handleMessage);
+
   var $appPlayer = $('#app-player');
   var $playPauseBtn = $('#play-pause');
   var $prevBtn = $('#previous');
@@ -42,11 +56,15 @@
     var length = getCurrentTrackLength();
     var uri = getCurrentTrackUri();
 
+    // spotify:track:43pZjkhBz717I5X8xepfwm -> 43pZjkhBz717I5X8xepfwm
+    var id = uri.replace('spotify:track:', '');
+
     return {
       name: name,
       artist: artist,
       length: length,
-      uri: uri
+      uri: uri,
+      id: id
     }
   };
 

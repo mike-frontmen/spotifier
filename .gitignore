@@ -1,4 +1,5 @@
 node_modules
+/covers/*
 /tracks/*
 .DS_Store
 ._*
