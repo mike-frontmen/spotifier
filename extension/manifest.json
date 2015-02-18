@@ -11,7 +11,7 @@
   },
   "background": {
     "scripts": [
-      "scripts/socket.io.js",
+      "scripts/libs/socket.io.js",
       "scripts/background.js"
     ],
     "persistent": false
@@ -28,7 +28,7 @@
       ],
       "all_frames": true,
       "js": [
-        "scripts/jquery.js",
+        "scripts/libs/jquery.js",
         "scripts/content.js"
       ]
     }
