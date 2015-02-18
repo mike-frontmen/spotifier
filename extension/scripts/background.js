@@ -1,15 +1,12 @@
 var socket = io('http://localhost:3000');
 
+function onPlayerNewTrack (track) {
+  socket.emit('player-new-track', track);
+}
+
 function handleMessage (data) {
-  if (data.type == 'recorder-start') {
-    socket.emit('recorder-start', {
-      name: data.name,
-      artist: data.artist,
-      length: data.length,
-      uri: data.uri
-    });
-  } else if (data.type === 'recorder-stop') {
-    socket.emit('recorder-stop');
+  if (data.type == 'player-new-track') {
+    onPlayerNewTrack(data.track);
   } else if (data.type === 'activate') {
     chrome.tabs.query({
       active: true,

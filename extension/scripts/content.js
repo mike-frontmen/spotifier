@@ -1,50 +1,13 @@
 (function () {
 
-  var isPlaying = false;
-
-  function activate () {
-    chrome.extension.sendMessage({
-      type: 'activate'
-    });
-  }
-
-  function stopRecording () {
-    chrome.extension.sendMessage({
-      type: 'recorder-stop'
-    });
-  }
-
-  function startRecording (name, artist, length, uri) {
-    chrome.extension.sendMessage({
-      type: 'recorder-start',
-      name: name,
-      artist: artist,
-      length: length,
-      uri: uri
-    });
-  }
-
-  activate();
-
-  // function playTrack (trackName, trackArtist) {
-  //   isPlaying = !isPlaying;
-
-  //   if (isPlaying) {
-
-  //   } else {
-  //     chrome.extension.sendMessage({
-  //       type: 'player-stop'
-  //     });
-  //   }
-  // }
-  
-  var INTERVAL_SPEED = 100;
-
+  var $appPlayer = $('#app-player');
   var $playPauseBtn = $('#play-pause');
+  var $prevBtn = $('#previous');
+  var $nextBtn = $('#next');
   var $trackLength = $('#track-length');
   var isPlaying = false;
-  var currentTrackName = '';
-  
+  var currentTrackName = null;
+
   function getCurrentTrackLength () {
     return $('#track-length').html();
   }
@@ -61,7 +24,19 @@
     return $('#cover-art a').attr('data-itemuri');
   }
 
-  function getCurrentTrackInfo () {
+  function pressPlayBtn () {
+    $playPauseBtn[0].click();
+  }
+
+  function pressPrevBtn () {
+    $prevBtn[0].click();
+  }
+
+  function pressNextBtn () {
+    $nextBtn[0].click();
+  }
+
+  function getCurrentTrack () {
     var name = getCurrentTrackName();
     var artist = getCurrentTrackArtist();
     var length = getCurrentTrackLength();
@@ -75,68 +50,81 @@
     }
   };
 
-  function onPlayingChange () {
-    if (isPlaying) {
-      stopRecording();
-      var newTrackInfo = getCurrentTrackInfo();
-      startRecording(newTrackInfo.name, newTrackInfo.artist, newTrackInfo.length, newTrackInfo.uri);
-    } else {
-      stopRecording();
-    }
+  function showMessage (message) {
+    console.log('Spotifier: ' + message);
   }
 
-  setInterval(function () {
-    var hasPlayingClass = $playPauseBtn.hasClass('playing');
-
-    // If the player wasn't playing before, but is now playing a track (a new track)
-    if (isPlaying === false && hasPlayingClass === true) {
-      isPlaying = true;
-      onPlayingChange();
-      currentTrackName = getCurrentTrackName();
-      listenForTrackNameChanges();
-
-    // If the player is playing a track, but it is now stopped playing (playing stopped)
-    } else if (isPlaying === true && hasPlayingClass === false) {
-      isPlaying = false;
-      onPlayingChange();
-      stopListeningForTrackNameChanges();
-    }
-  }, INTERVAL_SPEED);
-
-  var trackNameListener = null;
-
-  function listenForTrackNameChanges () {
-    trackNameListener = setInterval(function () {
-      var newTrackName = getCurrentTrackName();
-
-      if (newTrackName !== currentTrackName) {
-        currentTrackName = getCurrentTrackName();
-        stopRecording();
-        var newTrackInfo = getCurrentTrackInfo();
-        startRecording(newTrackInfo.name, newTrackInfo.artist, newTrackInfo.length, newTrackInfo.uri);
-      }
+  function activate () {
+    showMessage('initialized. Listening for user interactions.');
+    chrome.extension.sendMessage({
+      type: 'activate'
     });
   }
 
-  function stopListeningForTrackNameChanges () {
-    clearInterval(trackNameListener);
+  function onPlayerStartPlaying () {
+    startListeningForNewTrack();
   }
 
-  // var lastLength = null;
+  function onPlayerStopPlaying () {
+    stopListeningForNewTrack();
+  }
 
-  // function onTrackChange () {
-  //   stopRecording();
-  //   var newTrackInfo = getCurrentTrackInfo();
-  //   startRecording(newTrackInfo.name, newTrackInfo.artist, newTrackInfo.length, newTrackInfo.uri);
-  // }
+  function onPlayerNewTrack () {
+    showMessage('new track detected.');
+    chrome.extension.sendMessage({
+      type: 'player-new-track',
+      track: getCurrentTrack()
+    });
+  }
 
-  // setInterval(function () {
-  //   var currentLength = getCurrentTrackLength();
+  var newTrackListener = null;
 
-  //   if (lastLength !== currentLength) {
-  //     lastLength = currentLength;
-  //     onTrackChange();
-  //   }
-  // }, INTERVAL_SPEED);
+  function startListeningForNewTrack () {
+    newTrackListener = setInterval(function () {
+      var newTrackName = getCurrentTrackName();
+      
+      if (currentTrackName !== newTrackName) {
+        currentTrackName = newTrackName;
+        onPlayerNewTrack();
+      }
+    }, 100);
+  }
 
+  function stopListeningForNewTrack () {
+    clearInterval(newTrackListener);
+  }
+
+  function startListeningToPlayButtonState () {
+    setInterval(function () {
+      var hasPlayingClass = $playPauseBtn.hasClass('playing');
+
+      // If the player wasn't playing before, but is now playing a track.
+      if (isPlaying === false && hasPlayingClass === true) {
+        isPlaying = true;
+        onPlayerStartPlaying();
+
+      // If the player was playing before, but it has stopped.
+      } else if (isPlaying === true && hasPlayingClass == false) {
+        isPlaying = false;
+        onPlayerStopPlaying();
+      }
+    }, 100);
+  }
+
+  function initialize () {
+    activate();
+    startListeningToPlayButtonState();
+  }
+
+  function appPlayerReadyWatcher () {
+    if ($playPauseBtn.visible()) {
+      setTimeout(function () {
+        initialize();
+      }, 4000);
+
+      clearInterval(appPlayerLoadWatcher);
+    }
+  }
+
+  var appPlayerLoadWatcher = setInterval(appPlayerReadyWatcher);
 })();
