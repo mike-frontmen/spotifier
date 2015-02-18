@@ -1,0 +1,5 @@
+node_modules
+/tracks/*
+.DS_Store
+._*
+.Trashes
