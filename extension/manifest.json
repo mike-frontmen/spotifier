@@ -2,7 +2,6 @@
   "name": "Spotifier",
   "version": "0.0.1",
   "manifest_version": 2,
-  "default_locale": "en",
   "page_action": {
     "default_icon": {
       "19": "icons/icon-19.png",
@@ -12,8 +11,8 @@
   },
   "background": {
     "scripts": [
-      "src/bg/socket.js",
-      "src/bg/background.js"
+      "scripts/socket.io.js",
+      "scripts/background.js"
     ],
     "persistent": false
   },
@@ -29,8 +28,8 @@
       ],
       "all_frames": true,
       "js": [
-        "js/jquery/jquery-2.1.3.min.js",
-        "script.js"
+        "scripts/jquery.js",
+        "scripts/content.js"
       ]
     }
   ]
