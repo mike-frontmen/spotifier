@@ -2,7 +2,7 @@
 
 - Install Soundflower
 - Install Homebrew 
-- Install Lame (`brew install lame`)
+- Install Lame (`brew install lame`) or (`sudo apt-get install sox libsox-fmt-all` on most linux distributions)
 - Install Sox (`brew install sox`)
 
 # How it works?
