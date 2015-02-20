@@ -85,6 +85,10 @@
 
   function onPlayerStopPlaying () {
     stopListeningForNewTrack();
+    chrome.extension.sendMessage({
+      type: 'player-pause',
+      track: getCurrentTrack()
+    });
   }
 
   function onPlayerNewTrack () {

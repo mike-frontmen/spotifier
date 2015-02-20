@@ -38,9 +38,15 @@ function onPlayerNewTrack (track) {
   socket.emit('player-new-track', track);
 }
 
+function onPlayerPause (track) {
+  socket.emit('player-pause', track);
+}
+
 function handleMessage (data) {
   if (data.type == 'player-new-track') {
     onPlayerNewTrack(data.track);
+  } else if (data.type === 'player-pause') {
+    onPlayerPause(data.track);
   } else if (data.type === 'activate') {
     chrome.tabs.query({
       active: true,

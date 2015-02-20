@@ -71,10 +71,15 @@ function onDisconnect () {
   }
 }
 
+function onPlayerPause () {
+  showNotification('Player got paused.');
+}
+
 io.on('connection', function (socket) {
   showNotification('Browser extension connected.');
   socket.on('player-new-track', onPlayerNewTrack);
   socket.on('player-closed', onDisconnect);
+  socket.on('player-pause', onPlayerPause);
 });
 
 http.listen(3000, function () {
