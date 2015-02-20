@@ -21,8 +21,8 @@ io.on('connection', function (socket) {
   socket.on('player-new-track', function (trackData) {
 
     // If we where recording before, stop and record new track.
-    if (isRecording === true) {
-      console.log('Stopped recording');
+    if (isRecording === true && lastRecordedTrack !== null) {
+      showNotification('Stopped recording: ' + lastRecordedTrack.fileName);
       recorder.stop();
       isRecording = false;
 
