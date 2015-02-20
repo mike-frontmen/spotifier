@@ -11,12 +11,16 @@ var track = require('./track');
 var isRecording = false;
 var lastRecordedTrack = null;
 
+function showNotification (message) {
+  console.log('Spotifier: ' + message);
+}
+
 function getTrackFileName (trackData) {
   return decode('tracks/' + trackData.artist + ' - ' + trackData.name + '.mp3');
 }
 
 io.on('connection', function (socket) {
-  console.log('New user connected.');
+  showNotification('Browser extension connected.');
 
   socket.on('player-new-track', function (trackData) {
 
@@ -38,7 +42,7 @@ io.on('connection', function (socket) {
           console.log('Writing metadata and cover image for: ' + oldTrack.fileName);
           track.writeMetaData(trackInfo.name, trackInfo.artistName, trackInfo.albumName, trackInfo.trackNumber, oldTrack.fileName, coverFilePath, function (error) {
 
-            console.log('Finished song: ' + oldTrack.fileName);
+            showNotification('Finished song: ' + oldTrack.fileName);
           });
         });
       });
@@ -50,12 +54,12 @@ io.on('connection', function (socket) {
 
     // Start recording
     recorder.start(trackFileName);
-    console.log('Started recording: ' + trackFileName);
+    showNotification('Started recording: ' + trackFileName);
     lastRecordedTrack = trackData;
     isRecording = true;
   });
 });
 
 http.listen(3000, function () {
-  console.log('Spotifier server started.');
+  showNotification('Recorder started.');
 });
