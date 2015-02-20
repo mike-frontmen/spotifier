@@ -4,6 +4,7 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var decode = require('ent/decode');
 var del = require('del');
+var open = require('open');
 
 var recorder = require('./recorder');
 var player = require('./player')(io);
@@ -78,4 +79,5 @@ io.on('connection', function (socket) {
 
 http.listen(3000, function () {
   showNotification('Recorder started.');
+  open('https://play.spotify.com/browse');
 });
