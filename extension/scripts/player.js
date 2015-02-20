@@ -7,6 +7,7 @@ var player = {
   isPlaying: false,
   trackName: null,
   firstPlay: true,
+  firstNewTrack: true,
   getTrackName: function () {
     return $('#track-name a').html();
   },

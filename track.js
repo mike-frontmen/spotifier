@@ -34,6 +34,7 @@ exports.getInfo = function (trackId, callback) {
     var info = JSON.parse(res.text);
 
     callback({
+      id: trackId,
       name: info.name,
       artistName: info.artists[0].name,
       albumName: info.album.name,
