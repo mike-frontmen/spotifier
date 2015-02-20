@@ -11,7 +11,7 @@
       pressPrevBtn();
     }
   }
-
+  
   chrome.extension.onMessage.addListener(handleMessage);
 
   var $appPlayer = $('#app-player');

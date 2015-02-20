@@ -1,5 +1,13 @@
 var socket = io('http://localhost:3000');
 
+var playerTabId;
+
+chrome.tabs.onRemoved.addListener(function (tabId, removeInfo) {
+  if (tabId === playerTabId) {
+    socket.emit('player-closed'); 
+  }
+});
+
 function sendTabMessage (messageType) {
   chrome.tabs.query({
     active: true,
@@ -40,6 +48,7 @@ function handleMessage (data) {
     }, function (tabs) {
       var tab = tabs[0];
       var url = tab.url;
+      playerTabId = tab.id;
       chrome.pageAction.show(tab.id);
     });
   }
