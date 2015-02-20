@@ -34,19 +34,15 @@ socket.on('player-prev', function () {
   sendTabMessage('player-prev');
 });
 
-function onPlayerNewTrack (track) {
-  socket.emit('player-new-track', track);
-}
-
-function onPlayerPause (track) {
-  socket.emit('player-pause', track);
-}
+socket.on('player-continue-recording', function () {
+  sendTabMessage('player-continue-recording');
+});
 
 function handleMessage (data) {
-  if (data.type == 'player-new-track') {
-    onPlayerNewTrack(data.track);
-  } else if (data.type === 'player-pause') {
-    onPlayerPause(data.track);
+  if (data.type == 'player-start-recording') {
+    socket.emit('player-start-recording', data.trackId);
+  } else if (data.type === 'player-stop-recording') {
+    socket.emit('player-stop-recording', data.trackId);
   } else if (data.type === 'activate') {
     chrome.tabs.query({
       active: true,

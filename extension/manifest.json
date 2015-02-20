@@ -36,6 +36,7 @@
       "js": [
         "scripts/libs/jquery.js",
         "scripts/libs/jquery-visible.js",
+        "scripts/player.js",
         "scripts/content.js"
       ]
     }
