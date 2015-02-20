@@ -1,6 +1,6 @@
 var path = require('path');
 var request = require('superagent');
-var id3 = require('./id3-writer');
+var id3 = require('id3-writer');
 var Download = require('download');
 
 var writer = new id3.Writer();
