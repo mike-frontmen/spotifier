@@ -20,12 +20,12 @@ function showNotification (message) {
 
 function onPlayerStartRecording (trackId) {
   track.getInfo(trackId, function (info) {
-    var fileName = info.artistName + ' - ' + info.name + '.mp3';
+    var fileName = 'recordings/' + info.artistName + ' - ' + info.name + '.mp3';
     lastRecordedTrack = info;
     lastRecordedTrack.fileName = fileName;
     
     showNotification('Recording: ' + info.name + ' by ' + info.artistName);
-    recorder.start('recordings/' + fileName);
+    recorder.start(fileName);
 
     io.emit('started-recording');
   });
