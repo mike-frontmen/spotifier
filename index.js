@@ -32,6 +32,10 @@ function onPlayerStartRecording (trackId) {
 }
 
 function onPlayerStopRecording (trackId) {
+  if (lastRecordedTrack === null) {
+    return;
+  }
+  
   var lastTrack = lastRecordedTrack;
   recorder.stop();
   showNotification('Finished: ' + lastTrack.name + ' by ' + lastTrack.artistName);
