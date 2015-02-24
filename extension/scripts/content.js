@@ -14,18 +14,15 @@ chrome.extension.onMessage.addListener(function (data) {
   }
 });
 
-// Gets triggered when the recorder is actually recording...
+var isRecording = false;
+
 function onStartedRecording () {
-  // Continue playing.
-  player.pressPlayPauseBtn();
+  player.play();
+  isRecording = true;
 }
 
 function onStoppedRecording () {
-  console.log('should stop now!');
-
-  setTimeout(function () {
-    player.pressPlayPauseBtn();
-  }, 400);
+  isRecording = false;
 }
 
 function showPageAction () {
@@ -34,38 +31,30 @@ function showPageAction () {
   });
 }
 
-var firstTime = true;
-
 player.onReady(function () {
   showPageAction();
 
-  player.onPlayPauseBtnChange(function (isPlaying, firstPlay) {
-    if (firstPlay) {
+  player.onPlayingChange(function (isPlaying) {
+    if (isPlaying === false) {
+      return;
+    }
+    
+    setTimeout(function () {
+      if (isRecording === true) {
+        return;
+      }
 
-      // Pause the track.
-      player.pressPlayPauseBtn();
+      player.pause();
+      player.previous();
 
-      // Make the recorder start recording, 
-      // the extension receives 'started-recording' when
-      // it is recording audio. (onStartedRecording)
       chrome.extension.sendMessage({
         type: 'start-recording',
         trackId: player.getTrackId()
       });
-    }
+    }, 10000);
   });
 
   player.onNewTrack(function () {
-    if (firstTime === true) {
-      firstTime = false;
-      return;
-    }
-
-    player.pressPlayPauseBtn();
-
-    // // Make the recorder stop recording
-    // // the extension receives 'stopped-recording' when
-    // // it is finished with the track. (onStoppedRecording)
     chrome.extension.sendMessage({
       type: 'stop-recording',
       trackId: player.getTrackId()
