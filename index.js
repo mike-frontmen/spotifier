@@ -6,6 +6,7 @@ var decode = require('ent/decode');
 var del = require('del');
 var open = require('open');
 var moment = require('moment');
+var volume = require('osx-volume');
 
 var recorder = require('./recorder');
 var player = require('./player')(io);
@@ -13,6 +14,10 @@ var track = require('./track');
 
 var isRecording = false;
 var lastRecordedTrack = null;
+
+function setMaxVolume () {
+  volume.set(100);
+}
 
 function showNotification (message) {
   console.log('Spotifier: ' + message);
@@ -60,5 +65,8 @@ io.on('connection', function (socket) {
 });
 
 http.listen(3000, function () {
+  setMaxVolume();
+  open('https://play.spotify.com/collection');
   showNotification('Recorder started.');
+
 });
