@@ -35,11 +35,22 @@ function onPlayerStopRecording (trackId) {
   if (lastRecordedTrack === null) {
     return;
   }
-  
+
   var lastTrack = lastRecordedTrack;
   recorder.stop();
-  showNotification('Finished: ' + lastTrack.name + ' by ' + lastTrack.artistName);
+  showNotification('Stopped recording: ' + lastTrack.name + ' by ' + lastTrack.artistName);
   io.emit('stopped-recording');
+
+  var coverFileName = lastTrack.artistName + ' - ' + lastTrack.name + '.png';
+
+  showNotification('Downloading cover ...');
+  track.downloadCover(lastRecordedTrack.coverUrl, coverFileName, 'covers', function (error, coverFilePath) {
+
+    showNotification('Cover downloaded. Writing meta data.');
+    track.writeMetaData(lastTrack.name, lastTrack.artistName, lastTrack.albumName, lastTrack.trackNumber, lastTrack.fileName, coverFilePath, function (error) {
+      showNotification('Finished: ' + lastTrack.name + ' by ' + lastTrack.artistName);
+    });
+  });
 }
 
 io.on('connection', function (socket) {

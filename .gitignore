@@ -1,6 +1,6 @@
 node_modules
 /covers/*
-/tracks/*
+/recordings/*
 .DS_Store
 ._*
 .Trashes

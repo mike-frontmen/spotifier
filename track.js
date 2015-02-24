@@ -9,7 +9,7 @@ var writer = new id3.Writer();
 exports.writeMetaData = function (name, artistName, albumName, trackNumber, fileName, coverFileName, callback) {
   fileName = path.resolve(fileName);
 
-  var file = new id3.File('/' + fileName);
+  var file = new id3.File(fileName);
   var coverImage = new id3.Image(coverFileName);
   var metaData = new id3.Meta({
     title: name,
